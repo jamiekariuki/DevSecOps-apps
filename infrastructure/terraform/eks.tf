@@ -63,7 +63,9 @@ resource "kubernetes_service_account" "backend_sa" {
   metadata {
     name = "backend-service-account"
     annotations = {
-      "eks.amazonaws.com/role-arn" = module.external_secrets_irsa.iam_policy_arn
+      "eks.amazonaws.com/role-arn" = module.external_secrets_irsa.arn
     }
   }
+
+  depends_on = [module.eks]
 }
