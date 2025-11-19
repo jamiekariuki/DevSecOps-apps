@@ -2,8 +2,8 @@ name: Terraform
 
 on:
   push:
-    #  branches:
-    # - release/**
+    branches:
+    - main
     paths:
     - "infrastructure/terraform/**"
 
