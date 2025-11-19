@@ -17,11 +17,7 @@ on:
         - prod
 
 env:
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   ENVIRONMENT: dev #${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref_name == 'release/dev' && 'dev' || github.ref_name == 'release/stage' && 'stage' || 'prod') }}
-
-permissions:
-  contents: write
 
 jobs:
   # Step 1: Terraform Apply
@@ -38,7 +34,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-region: ${{ secrets.REGION }}
 
     - name: Terraform Init
       working-directory: infrastructure/terraform

@@ -6,6 +6,3 @@ variable "region" {
   type = string
 }
 
-variable "ENV_PREFIX" {
-  type = string
-}

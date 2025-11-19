@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "state" {
-   bucket        = "${var.aws_account_id}-app-${var.ENV_PREFIX}"
+   bucket        = "${var.aws_account_id}-state"
    force_destroy = true
 }
 
