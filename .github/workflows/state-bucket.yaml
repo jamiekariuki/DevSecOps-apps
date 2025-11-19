@@ -1,4 +1,4 @@
-name: Terraform
+name: State bucket
 
 on:
   workflow_dispatch:
