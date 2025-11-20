@@ -1,13 +1,10 @@
-name: Terraform
+name: Terraform Destroy
 
 on:
-  push:
-    branches: [ mainx ]
-
   workflow_dispatch:
     inputs:
       environment:
-        description: "Select environment to deploy"
+        description: "Select environment to destroy"
         required: true
         default: "dev"
         type: choice
@@ -17,15 +14,15 @@ on:
         - prod
 
 env:
-  ENVIRONMENT: dev #${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref_name == 'release/dev' && 'dev' || github.ref_name == 'release/stage' && 'stage' || 'prod') }}
+  ENVIRONMENT: ${{ github.event.inputs.environment }}
 
 jobs:
-  # Step 1: Terraform Apply
-  terraform:
+  terraform-destroy:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
@@ -44,7 +41,7 @@ jobs:
       working-directory: infrastructure/terraform
       run: terraform workspace select -or-create=true $ENVIRONMENT
 
-    - name: Terraform Apply
+    - name: Terraform Destroy
       working-directory: infrastructure/terraform
       env:
         TF_IN_AUTOMATION: true
@@ -56,7 +53,7 @@ jobs:
         SERVICE_ACCOUNT_NAME: ${{ secrets.SERVICE_ACCOUNT_NAME }}
         ENV_PREFIX: ${{ env.ENVIRONMENT }}
       run: |
-        terraform apply -auto-approve -input=false \
+        terraform destroy -auto-approve -input=false \
           -var="aws_account_id=$AWS_ACCOUNT_ID" \
           -var="region=$REGION" \
           -var="cluster_name=$CLUSTER_NAME" \

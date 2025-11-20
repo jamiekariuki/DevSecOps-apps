@@ -157,7 +157,7 @@ spec:
       property: password
   - secretKey: POSTGRES_DB
     remoteRef:
-      key: ${module.db.db_instance_master_user_secret_arn}
+      key: ${module.db.db_instance_master_user_secret_arn
       property: dbname
   - secretKey: POSTGRES_HOST
     remoteRef:
