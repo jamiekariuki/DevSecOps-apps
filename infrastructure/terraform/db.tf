@@ -1,21 +1,34 @@
-//rds security groups
-module "security_group" {
+// DB Subnet Group
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name       = "${var.ENV_PREFIX}-db-subnet-group"
+  description = "Subnet group for ${var.ENV_PREFIX} RDS"
+
+  # Use the private subnets from your VPC module
+  subnet_ids = module.vpc.private_subnets
+
+  tags = {
+    Environment = var.ENV_PREFIX
+    Terraform   = "true"
+  }
+}
+
+// Security Group for RDS
+module "db_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
   name        = "${var.ENV_PREFIX}-db-sg"
   description = "PostgreSQL security group"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id  # MUST match DB subnets
 
-  # ingress
   ingress_with_cidr_blocks = [
     {
       from_port   = 5432
       to_port     = 5432
       protocol    = "tcp"
       description = "PostgreSQL access from within VPC"
-      cidr_blocks = module.vpc.vpc_cidr_block
-    },
+      cidr_blocks = [module.vpc.vpc_cidr_block]  # wrap in list
+    }
   ]
 
   tags = {
@@ -59,8 +72,8 @@ module "db" {
   master_user_password_rotation_schedule_expression = "rate(15 days)"
 
   multi_az               = true
-  db_subnet_group_name   = module.vpc.database_subnet_group
-  vpc_security_group_ids = [module.security_group.security_group_id]
+  db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
+  vpc_security_group_ids = [module.db_sg.security_group_id]
 
   maintenance_window              = "Mon:00:00-Mon:03:00"
   backup_window                   = "03:00-06:00"
