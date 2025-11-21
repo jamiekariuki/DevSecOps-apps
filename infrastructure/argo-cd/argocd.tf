@@ -7,4 +7,4 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
 }
-//test2
+//test24
