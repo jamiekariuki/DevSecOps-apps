@@ -20,9 +20,37 @@ env:
   ENVIRONMENT: dev #${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref_name == 'release/dev' && 'dev' || github.ref_name == 'release/stage' && 'stage' || 'prod') }}
 
 jobs:
+  terraform-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: filter
+      uses: dorny/paths-filter@v2
+      with:
+        filters: |
+          changed:
+            - 'infrastructure/terraform/**'
+
+  argocd-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: filter
+      uses: dorny/paths-filter@v2
+      with:
+        filters: |
+          changed:
+            - 'infrastructure/argo-cd/**'
+
   # Step 1: Terraform Apply
   terraform:
     runs-on: ubuntu-latest
+    needs: terraform-filter
+    if: needs.terraform-filter.outputs.changed == 'true'
 
     steps:
     - uses: actions/checkout@v4
@@ -68,7 +96,10 @@ jobs:
   # Step 2: configure argocd
   Argocd:
     runs-on: ubuntu-latest
-    needs: terraform
+    needs:
+    - terraform
+    - argocd-filter
+    if: needs.argocd-filter.outputs.changed == 'true'
 
     steps:
     - uses: actions/checkout@v4
