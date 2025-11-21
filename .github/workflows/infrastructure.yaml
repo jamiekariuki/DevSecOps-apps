@@ -17,7 +17,7 @@ on:
         - prod
 
 env:
-  ENVIRONMENT: dev
+  ENVIRONMENT: dev #${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref_name == 'release/dev' && 'dev' || github.ref_name == 'release/stage' && 'stage' || 'prod') }
 
 jobs:
   # Detect what changed
@@ -53,45 +53,18 @@ jobs:
     if: needs.detect-changes.outputs.terraform_changed == 'true'
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+    - uses: ./.github/actions/terraform-run
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.REGION }}
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ secrets.REGION }}
 
-    - name: Terraform Init
-      working-directory: infrastructure/terraform
-      run: terraform init -upgrade
-
-    - name: Select Terraform Workspace
-      working-directory: infrastructure/terraform
-      run: terraform workspace select -or-create=true $ENVIRONMENT
-
-    - name: Terraform Apply
-      working-directory: infrastructure/terraform
-      env:
-        TF_IN_AUTOMATION: true
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        REGION: ${{ secrets.REGION }}
-        CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-        DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        SERVICE_ACCOUNT_NAME: ${{ secrets.SERVICE_ACCOUNT_NAME }}
-        ENV_PREFIX: ${{ env.ENVIRONMENT }}
-      run: |
-        terraform apply -auto-approve -input=false \
-          -var="aws_account_id=$AWS_ACCOUNT_ID" \
-          -var="region=$REGION" \
-          -var="cluster_name=$CLUSTER_NAME" \
-          -var="db_username=$DB_USERNAME" \
-          -var="db_name=$DB_NAME" \
-          -var="service_account_name=$SERVICE_ACCOUNT_NAME" \
-          -var="ENV_PREFIX=$ENV_PREFIX"
+        aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        cluster_name: ${{ secrets.CLUSTER_NAME }}
+        db_username: ${{ secrets.DB_USERNAME }}
+        db_name: ${{ secrets.DB_NAME }}
+        service_account_name: ${{ secrets.SERVICE_ACCOUNT_NAME }}
+        environment: ${{ env.ENVIRONMENT }}
 
   # Dummy job to act as a gate when both changed
   terraform-gate:
@@ -112,33 +85,13 @@ jobs:
       needs.detect-changes.outputs.both_changed == 'false'
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+    - uses: ./.github/actions/argocd-run
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.REGION }}
-
-    - name: Terraform Init
-      working-directory: infrastructure/argo-cd
-      run: terraform init -upgrade
-
-    - name: Terraform Apply
-      working-directory: infrastructure/argo-cd
-      env:
-        TF_IN_AUTOMATION: true
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        REGION: ${{ secrets.REGION }}
-        CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-      run: |
-        terraform apply -auto-approve -input=false \
-          -var="aws_account_id=$AWS_ACCOUNT_ID" \
-          -var="region=$REGION" \
-          -var="cluster_name=$CLUSTER_NAME"
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ secrets.REGION }}
+        cluster_name: ${{ secrets.CLUSTER_NAME }}
+        aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
   # Step 3: ArgoCD Apply - Dependent path (both changed, waits for terraform)
   argocd-dependent:
@@ -149,30 +102,10 @@ jobs:
     if: needs.detect-changes.outputs.both_changed == 'true'
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+    - uses: ./.github/actions/argocd-run
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.REGION }}
-
-    - name: Terraform Init
-      working-directory: infrastructure/argo-cd
-      run: terraform init -upgrade
-
-    - name: Terraform Apply
-      working-directory: infrastructure/argo-cd
-      env:
-        TF_IN_AUTOMATION: true
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        REGION: ${{ secrets.REGION }}
-        CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-      run: |
-        terraform apply -auto-approve -input=false \
-          -var="aws_account_id=$AWS_ACCOUNT_ID" \
-          -var="region=$REGION" \
-          -var="cluster_name=$CLUSTER_NAME"
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ secrets.REGION }}
+        cluster_name: ${{ secrets.CLUSTER_NAME }}
+        aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
