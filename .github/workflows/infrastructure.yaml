@@ -39,7 +39,7 @@ jobs:
   # Step 1: Terraform Apply
   terraform:
     runs-on: ubuntu-latest
-    needs: terraform-filter
+    needs: detect-changes
     if: needs.detect-changes.outputs.terraform_changed == 'true'
 
     steps:
