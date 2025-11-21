@@ -97,6 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
     - terraform-filter
+    - terraform
     if: always() # always runs
     outputs:
       tf_ran: ${{ needs.terraform-filter.outputs.changed }}
