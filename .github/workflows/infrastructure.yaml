@@ -94,7 +94,7 @@ jobs:
         region: ${{ secrets.REGION }}
         cluster_name: ${{ secrets.CLUSTER_NAME }}
         aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        directory: terraform/helm
+        directory: infrastructure/helm
 
   app-configure-independent:
     runs-on: ubuntu-latest
@@ -130,7 +130,7 @@ jobs:
         region: ${{ secrets.REGION }}
         cluster_name: ${{ secrets.CLUSTER_NAME }}
         aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        directory: terraform/helm
+        directory: infrastructure/helm
 
   app-configure-dependent:
     runs-on: ubuntu-latest
