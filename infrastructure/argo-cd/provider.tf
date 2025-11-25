@@ -20,7 +20,7 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.default.token
 }
 
-# Helm provider
+# Helm provider for argocd
 provider "helm" {
   kubernetes ={
     host                   = data.aws_eks_cluster.default.endpoint
