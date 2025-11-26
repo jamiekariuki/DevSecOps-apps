@@ -34,9 +34,9 @@ jobs:
       with:
         filters: |
           terraform:
-            - 'infrastructure/terraform/**'
+            - 'terraform/infrastructure/**'
           argocd:
-            - 'infrastructure/argocd/**'
+            - 'terraform/argocd/**'
 
     - id: check_both
       run: |
@@ -54,18 +54,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: ./.github/actions/terraform-run
+    - uses: ./.github/actions/infrastructure-run
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         region: ${{ secrets.REGION }}
-
         aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
         cluster_name: ${{ secrets.CLUSTER_NAME }}
         db_username: ${{ secrets.DB_USERNAME }}
         db_name: ${{ secrets.DB_NAME }}
         service_account_name: ${{ secrets.SERVICE_ACCOUNT_NAME }}
         environment: ${{ env.ENVIRONMENT }}
+        directory: terraform/infrastructure
 
   # Dummy job to act as a gate when both changed
   terraform-gate:
@@ -94,7 +94,7 @@ jobs:
         region: ${{ secrets.REGION }}
         cluster_name: ${{ secrets.CLUSTER_NAME }}
         aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        directory: infrastructure/argocd
+        directory: terraform/argocd
         repo_url: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git
         target_revision: ${GITHUB_REF_NAME}
         environment: ${{ env.ENVIRONMENT }}
@@ -116,7 +116,7 @@ jobs:
         region: ${{ secrets.REGION }}
         cluster_name: ${{ secrets.CLUSTER_NAME }}
         aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        directory: infrastructure/argocd
+        directory: terraform/argocd
         repo_url: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git
         target_revision: ${GITHUB_REF_NAME}
         environment: ${{ env.ENVIRONMENT }}

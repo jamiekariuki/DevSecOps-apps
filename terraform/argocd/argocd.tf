@@ -21,7 +21,6 @@ resource "kubernetes_namespace" "env" {
 }
  
 #app of apps
-
 locals {
   argocd_manifests = fileset("${path.module}/apps", "*.yaml.tpl")
 }
