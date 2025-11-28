@@ -1,27 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: {{ .Release.Name }}-{{ .Values.backend.name }}
+  namespace: {{ .Values.namespace }}
   labels:
-    app: backend
+    {{- range $k, $v := .Values.backend.labels }}
+    {{ $k }}: {{ $v }}
+    {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.backend.replicas }}
   selector:
     matchLabels:
-      app: backend
+      {{- range $k, $v := .Values.backend.labels }}
+      {{ $k }}: {{ $v }}
+      {{- end }}
   template:
     metadata:
       labels:
-        app: backend
+        {{- range $k, $v := .Values.backend.labels }}
+        {{ $k }}: {{ $v }}
+        {{- end }}
     spec:
+      serviceAccountName: {{ .Values.backend.serviceAccountName | default "default" }}
       containers:
-      - name: backend
-        image: jamiekariuki/blog:latest
-        ports:
-        - containerPort: 8000
+        - name: {{ .Values.backend.name }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.containerPort }}
+          resources:
+            requests:
+              cpu: {{ .Values.backend.resources.requests.cpu }}
+              memory: {{ .Values.backend.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.backend.resources.limits.cpu }}
+              memory: {{ .Values.backend.resources.limits.memory }} 
 
-#        envFrom:
-#        - configMapRef:
-#            name: backend-config
-#        - secretRef:
-#            name: backend-secrets
+

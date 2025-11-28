@@ -20,10 +20,6 @@ spec:
         {{- range $key, $value := .Values.frontend.labels }}
         {{ $key }}: {{ $value }}
         {{- end }}
-      {{- with .Values.frontend.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
     spec:
       serviceAccountName: {{ .Values.frontend.serviceAccountName | default "default" }}
       containers:
