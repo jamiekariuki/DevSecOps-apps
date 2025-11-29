@@ -1,7 +1,0 @@
-resources:
-- ../../base
-
-patches:
-- path: values.yaml
-  target:
-    kind: HelmChart
