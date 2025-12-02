@@ -103,7 +103,7 @@ jobs:
       run: |
         echo "ECR_REGISTRY=$ECR_URL"
         echo "VERSION=$VERSION"
-        docker build -t $ECR_URL:$VERSION ./${inputs.dockerfile}
+        docker build -t $ECR_URL:$VERSION ./${{inputs.dockerfile}}
         docker push $ECR_URL:$VERSION
 
   # Create Git tag

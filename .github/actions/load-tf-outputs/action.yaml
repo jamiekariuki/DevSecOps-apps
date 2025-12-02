@@ -11,7 +11,7 @@ runs:
   - name: Download TF outputs artifact
     uses: actions/download-artifact@v4
     with:
-      name: tf-outputs
+      name: tf-outputs-${{ inputs.service_name }}
       path: ./tf-data
 
   - name: Load TF outputs into env
