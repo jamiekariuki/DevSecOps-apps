@@ -17,6 +17,8 @@ inputs:
   aws-account-id:
     description: "AWS Account ID"
     required: true
+  service_name:
+    required: true
 
 runs:
   using: "composite"
