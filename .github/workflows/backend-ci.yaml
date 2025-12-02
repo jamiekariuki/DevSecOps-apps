@@ -1,0 +1,23 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      #    - 'frontend-react/**'
+      #    - 'backend-django/**'
+
+permissions:
+  contents: write
+
+jobs:
+  backend:
+    uses: ./.github/workflows/main-ci.yaml
+    with:
+      service_name: "backend"
+      dockerfile: "backend-django"
+      runtime: "python"
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
