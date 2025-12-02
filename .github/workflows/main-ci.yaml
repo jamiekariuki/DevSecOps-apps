@@ -142,6 +142,9 @@ jobs:
       run: |
         chmod +x .github/actions/scripts/update-helm.sh
 
+        echo "ls remote"
+        git ls-remote https://x-access-token:${{ secrets.HELM_REPO_PAT }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
+
         .github/actions/scripts/update-helm.sh \
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
