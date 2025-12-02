@@ -131,7 +131,7 @@ jobs:
       run: |
         git config --global user.name "jamiekariuki"
         git config --global user.email "jamiekariuki18@github.com"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
+        git remote set-url origin https://x-access-token:${{ secrets.HELM_REPO_PAT }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
 
     - name: Load TF Outputs
       uses: ./.github/actions/load-tf-outputs
@@ -146,7 +146,7 @@ jobs:
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
           "ECR_URL" \
-          "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamiekariuki/DevSecOps-helm-charts.git" \
+          "https://x-access-token:${{ secrets.HELM_REPO_PAT }}@github.com/jamiekariuki/DevSecOps-helm-charts.git" \
           "main" \
           "app" \
           "dev"
