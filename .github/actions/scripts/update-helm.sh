@@ -8,8 +8,9 @@ ECR_URL="$3"
 HELM_REPO_URL="$4"
 HELM_REPO_BRANCH="${5:-main}"
 HELM_CHART_PATH="$6"
+ENVIRONMENT="$7"
 
-if [ -z "$SERVICE_NAME" ] || [ -z "$VERSION" ] || [ -z "$ECR_URL" ] || [ -z "$HELM_REPO_URL" ] || [ -z "$HELM_CHART_PATH" ]; then
+if [ -z "$SERVICE_NAME" ] || [ -z "$ENVIRONMENT" ] || [ -z "$VERSION" ] || [ -z "$ECR_URL" ] || [ -z "$HELM_REPO_URL" ] || [ -z "$HELM_CHART_PATH" ]; then
   echo "ERROR: Missing required arguments."
   echo "Usage: update-helm.sh <service_name> <version> <ecr_url> <helm_repo_url> <branch> <chart_path>"
   exit 1
@@ -20,6 +21,7 @@ echo "Version: $VERSION"
 echo "ECR: $ECR_URL"
 echo "External Helm Repo: $HELM_REPO_URL"
 echo "Helm Chart Path: $HELM_CHART_PATH"
+echo "Current environment: $$ENVIRONMENT"
 
 # --- 1. Clone external Helm repo ---
 echo "Cloning helm repo..."
@@ -34,9 +36,9 @@ then
     sudo chmod +x /usr/bin/yq
 fi
 
-VALUES_FILE="$HELM_CHART_PATH/values-dev.yaml"
+VALUES_FILE="$HELM_CHART_PATH/values-$ENVIRONMENT.yaml"
 
-echo "Updating values.yaml at $VALUES_FILE..."
+echo "Updating values-$ENVIRONMENT.yaml at $VALUES_FILE..."
 
 # --- 3. Update values.yaml dynamically for the service ---
 yq -i ".${SERVICE_NAME}.image.repository = \"$ECR_URL\"" "$VALUES_FILE"
@@ -51,6 +53,14 @@ git add "$VALUES_FILE"
 if git diff --cached --quiet; then
   echo "No changes to commit."
 else
-  git commit -m "Update ${SERVICE_NAME} tag to ${VERSION}"
+  git commit -m "${SERVICE_NAME} rollout to ${VERSION} in ${ENVIRONMENT}"
   git push origin "$HELM_REPO_BRANCH"
 fi
+
+echo "creating tag"
+
+FINAL_TAG="${ENVIRONMENT}-${SERVICE}-${VERSION}"
+
+echo "Tagging with: $FINAL_TAG"
+git tag "$FINAL_TAG"
+git push origin "$FINAL_TAG"

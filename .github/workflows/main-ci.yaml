@@ -125,14 +125,15 @@ jobs:
 
     - name: Run update script
       run: |
-        chmod +x .github/scripts/update-helm.sh
+        chmod +x .github/actions/scripts/update-helm.sh
 
-        .github/scripts/update-helm.sh \
+        .github/actions/scripts/update-helm.sh \
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
           "${{ env.ECR_URL }}" \
           "https://github.com/jamiekariuki/DevSecOps-helm-charts.git" \
           "main" \
-          "app"
+          "app" \
+          "dev"
       env:
         ECR_URL: ${{ steps.load-tf-outputs.outputs.ecr_url }}
