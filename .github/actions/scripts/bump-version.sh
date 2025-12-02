@@ -54,7 +54,7 @@ case $BUMP in
 esac
 
 # 6. Compose new tag
-NEW_TAG="$v$MAJOR.$MINOR.$PATCH"
+NEW_TAG="v$MAJOR.$MINOR.$PATCH"
 echo "New version: $NEW_TAG"
 
 # 7. Expose version to GitHub Actions
