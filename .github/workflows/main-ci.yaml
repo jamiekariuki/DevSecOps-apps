@@ -35,9 +35,7 @@ jobs:
     steps:
     - name: Debug service name
       run: |
-        echo "AWS Key: ${#AWS_SECRET_ACCESS_KEY}"
-      env:
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.service_name }}
+        echo "service name: ${{ inputs.service_name }}"
 
   tf-outputs:
     runs-on: ubuntu-latest
