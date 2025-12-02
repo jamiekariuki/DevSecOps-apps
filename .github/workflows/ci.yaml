@@ -27,10 +27,8 @@ jobs:
           backend:
             - 'backend-django/**'
 
-  frontend:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.frontend_changed == 'false'
-
+  debug-frontend:
+    runs-on: ubuntu-latest
     steps:
     - name: Debug secrets
       run: |
@@ -38,6 +36,9 @@ jobs:
       env:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+  frontend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend_changed == 'false'
     uses: ./.github/workflows/main-ci.yaml
     with:
       service_name: "frontend"
