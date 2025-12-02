@@ -27,15 +27,6 @@ jobs:
           backend:
             - 'backend-django/**'
 
-  debug-frontend:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Debug secrets
-      run: |
-        echo "AWS Key: ${#AWS_SECRET_ACCESS_KEY}"
-      env:
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
   frontend:
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend_changed == 'false'

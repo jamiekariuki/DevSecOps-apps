@@ -22,6 +22,15 @@ permissions:
 
 jobs:
   # Step 2: Download TF state from S3 and save outputs as artifact
+  debug-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Debug secrets
+      run: |
+        echo "AWS Key: ${#AWS_SECRET_ACCESS_KEY}"
+      env:
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
   tf-outputs:
     runs-on: ubuntu-latest
     steps:
