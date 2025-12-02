@@ -53,7 +53,7 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
     - run: chmod +x ./.github/actions/scripts/bump-version.sh
     - id: bump
-      run: COMPONENT=${inputs.service_name} ./.github/actions/scripts/bump-version.sh
+      run: COMPONENT=${{inputs.service_name}} ./.github/actions/scripts/bump-version.sh
 
   # Build and push Docker image to ECR
   push:
