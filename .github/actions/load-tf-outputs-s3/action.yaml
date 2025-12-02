@@ -58,5 +58,5 @@ runs:
   - name: Upload TF outputs artifact
     uses: actions/upload-artifact@v4
     with:
-      name: tf-outputs-${{ inputs.service_name }}-${{ github.run_id }}
+      name: tf-outputs
       path: tf-outputs.json
