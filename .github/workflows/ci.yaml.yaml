@@ -1,0 +1,43 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - 'frontend-react/**'
+    - 'backend-django/**'
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_changed: ${{ steps.filter.outputs.frontend }}
+      backend_changed: ${{ steps.filter.outputs.backend }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: filter
+      uses: dorny/paths-filter@v2
+      with:
+        filters: |
+          frontend:
+            - 'frontend-react/**'
+          backend:
+            - 'backend-django/**'
+
+  frontend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend_changed == 'true'
+    uses: ./.github/workflows/main-ci.yaml
+    with:
+      service_name: "frontend"
+      dockerfile: "frontend-react"
+      runtime: "node"
+
+  backend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend_changed == 'true'
+    uses: ./.github/workflows/main-ci.yaml
+    with:
+      service_name: "backend"
+      dockerfile: "backend-django"
+      runtime: "python"

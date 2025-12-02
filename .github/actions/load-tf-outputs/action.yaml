@@ -1,0 +1,23 @@
+name: Load TF Outputs
+description: Downloads Terraform outputs artifact and loads them into environment variables
+inputs:
+  service:
+    description: "frontend or backend"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Download TF outputs artifact
+    uses: actions/download-artifact@v4
+    with:
+      name: tf-outputs
+      path: ./tf-data
+
+  - name: Load TF outputs into env
+    shell: bash
+    run: |
+      URL="${{ inputs.service }}_url"
+
+      ECR_URL=$(jq -r ."$URL" ./tf-data/tf-outputs.json)
+      echo "ECR_URL=$ECR_URL" >> $GITHUB_ENV
