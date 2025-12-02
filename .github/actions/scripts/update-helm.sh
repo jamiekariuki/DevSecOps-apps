@@ -10,18 +10,18 @@ HELM_REPO_BRANCH="${5:-main}"
 HELM_CHART_PATH="$6"
 ENVIRONMENT="$7"
 
-if [ -z "$SERVICE_NAME" ] || [ -z "$ENVIRONMENT" ] || [ -z "$VERSION" ] || [ -z "$ECR_URL" ] || [ -z "$HELM_REPO_URL" ] || [ -z "$HELM_CHART_PATH" ]; then
-  echo "ERROR: Missing required arguments."
-  echo "Usage: update-helm.sh <service_name> <version> <ecr_url> <helm_repo_url> <branch> <chart_path>"
-  exit 1
-fi
-
 echo "Service: $SERVICE_NAME"
 echo "Version: $VERSION"
 echo "ECR: $ECR_URL"
 echo "External Helm Repo: $HELM_REPO_URL"
 echo "Helm Chart Path: $HELM_CHART_PATH"
 echo "Current environment: $$ENVIRONMENT"
+
+if [ -z "$SERVICE_NAME" ] || [ -z "$ENVIRONMENT" ] || [ -z "$VERSION" ] || [ -z "$ECR_URL" ] || [ -z "$HELM_REPO_URL" ] || [ -z "$HELM_CHART_PATH" ]; then
+  echo "ERROR: Missing required arguments."
+  echo "Usage: update-helm.sh <service_name> <version> <ecr_url> <helm_repo_url> <branch> <chart_path>"
+  exit 1
+fi
 
 # --- 1. Clone external Helm repo ---
 echo "Cloning helm repo..."

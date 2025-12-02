@@ -145,7 +145,7 @@ jobs:
         .github/actions/scripts/update-helm.sh \
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
-          "${ECR_URL}" \
+          "${{ ECR_URL }}" \
           "https://github.com/jamiekariuki/DevSecOps-helm-charts.git" \
           "main" \
           "app" \
