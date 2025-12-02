@@ -125,6 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ push, versioning, tf-outputs ]
     steps:
+    - uses: actions/checkout@v4
 
     - name: Setup Git credentials
       run: |
@@ -132,7 +133,6 @@ jobs:
         git config --global user.email "jamiekariuki18@github.com"
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
 
-    - uses: actions/checkout@v4
     - name: Load TF Outputs
       uses: ./.github/actions/load-tf-outputs
       with:
