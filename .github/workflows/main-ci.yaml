@@ -146,7 +146,7 @@ jobs:
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
           "ECR_URL" \
-          "https://github.com/jamiekariuki/DevSecOps-helm-charts.git" \
+          "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamiekariuki/DevSecOps-helm-charts.git" \
           "main" \
           "app" \
           "dev"
