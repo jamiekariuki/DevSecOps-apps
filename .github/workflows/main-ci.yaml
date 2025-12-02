@@ -24,7 +24,6 @@ jobs:
   # Step 2: Download TF state from S3 and save outputs as artifact
   tf-outputs:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Load TF Outputs from s3
