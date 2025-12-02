@@ -128,8 +128,8 @@ jobs:
 
     - name: Setup Git credentials
       run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
+        git config --global user.name "jamiekariuki"
+        git config --global user.email "jamiekariuki18@github.com"
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
 
     - uses: actions/checkout@v4
