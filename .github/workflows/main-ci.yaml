@@ -141,7 +141,6 @@ jobs:
       with:
         repository: jamiekariuki/DevSecOps-helm-charts
         token: ${{ secrets.HELM_REPO_PAT }}
-        path: app
         ref: main
 
     - name: Run update script
