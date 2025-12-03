@@ -91,7 +91,7 @@ jobs:
 
     - name: Run update script
       run: |
-        chmod +x .github/actions/scripts/update-helm.sh
+        chmod +x ./.github/actions/scripts/update-helm.sh
 
         .github/actions/scripts/update-helm.sh \
           "${{ inputs.service_name }}" \
