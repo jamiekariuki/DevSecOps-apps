@@ -127,6 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ push, versioning, tf-outputs ]
     steps:
+    - uses: actions/checkout@v4
 
     - name: Load TF Outputs
       uses: ./.github/actions/load-tf-outputs
