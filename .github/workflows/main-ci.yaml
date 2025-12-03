@@ -125,13 +125,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ push, versioning, tf-outputs ]
     steps:
+    - name: Checkout Helm Repo
     - uses: actions/checkout@v4
-
-    - name: Setup Git credentials
-      run: |
-        git config --global user.name "jamiekariuki"
-        git config --global user.email "jamiekariuki18@github.com"
-        git remote set-url origin https://x-access-token:${{ secrets.HELM_REPO_PAT }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
+      with:
+        repository: jamiekariuki/DevSecOps-helm-charts
+        token: ${{ secrets.HELM_REPO_PAT }}
+        path: app
+        ref: main
 
     - name: Load TF Outputs
       uses: ./.github/actions/load-tf-outputs
@@ -142,14 +142,11 @@ jobs:
       run: |
         chmod +x .github/actions/scripts/update-helm.sh
 
-        echo "ls remote"
-        git ls-remote https://x-access-token:${{ secrets.HELM_REPO_PAT }}@github.com/jamiekariuki/DevSecOps-helm-charts.git
-
         .github/actions/scripts/update-helm.sh \
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
           "ECR_URL" \
-          "https://x-access-token:${{ secrets.HELM_REPO_PAT }}@github.com/jamiekariuki/DevSecOps-helm-charts.git" \
+          "app" \
           "main" \
           "app" \
           "dev"
