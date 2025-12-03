@@ -4,8 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      #    - 'frontend-react/**'
-      #    - 'backend-django/**'
+    - 'backend-django/**'
 
 permissions:
   contents: write
