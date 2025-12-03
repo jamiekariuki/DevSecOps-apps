@@ -20,6 +20,8 @@ on:
         required: true
       AWS_ACCOUNT_ID:
         required: true
+      HELM_REPO_PAT:
+        required: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.service_name }}
