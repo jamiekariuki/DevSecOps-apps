@@ -148,6 +148,6 @@ jobs:
         .github/actions/scripts/update-helm.sh \
           "${{ inputs.service_name }}" \
           "${{ needs.versioning.outputs.new_version }}" \
-          "ECR_URL" \
+          "${{ env.ECR_URL }}" \
           "app" \
           "dev"
