@@ -76,7 +76,7 @@ jobs:
         git tag "$FINAL_TAG"
         git push origin "$FINAL_TAG"
 
-  #updating helm repo
+  #updating helm repo chart
   update-helm-values:
     runs-on: ubuntu-latest
     needs: [ versioning ]
