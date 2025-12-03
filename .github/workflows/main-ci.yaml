@@ -127,6 +127,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ push, versioning, tf-outputs ]
     steps:
+
+    - name: Load TF Outputs
+      uses: ./.github/actions/load-tf-outputs
+      with:
+        service: ${{ inputs.service_name }}
+
     - name: Checkout Helm Repo
       uses: actions/checkout@v4
       with:
@@ -134,11 +140,6 @@ jobs:
         token: ${{ secrets.HELM_REPO_PAT }}
         path: app
         ref: main
-
-    - name: Load TF Outputs
-      uses: ./.github/actions/load-tf-outputs
-      with:
-        service: ${{ inputs.service_name }}
 
     - name: Run update script
       run: |
