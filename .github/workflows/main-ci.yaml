@@ -98,6 +98,4 @@ jobs:
           "${{ needs.versioning.outputs.new_version }}" \
           "ECR_URL" \
           "app" \
-          "main" \
-          "app" \
           "dev"
