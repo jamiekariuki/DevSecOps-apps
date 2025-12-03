@@ -126,7 +126,7 @@ jobs:
     needs: [ push, versioning, tf-outputs ]
     steps:
     - name: Checkout Helm Repo
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
       with:
         repository: jamiekariuki/DevSecOps-helm-charts
         token: ${{ secrets.HELM_REPO_PAT }}
