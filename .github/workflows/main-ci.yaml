@@ -152,4 +152,4 @@ jobs:
           "${{ needs.versioning.outputs.new_version }}" \
           "${{ env.ECR_URL }}" \
           "app" \
-          "dev"
+          "dev" 
