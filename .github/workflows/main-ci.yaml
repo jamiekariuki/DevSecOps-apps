@@ -13,7 +13,7 @@ on:
         required: true
         type: string
       environment:
-        required:
+        required: true
         type: string  
 
     secrets:
